@@ -1,1 +1,4 @@
 venv
+.idea
+.DS_Store
+.$task1.drawio.bkp
