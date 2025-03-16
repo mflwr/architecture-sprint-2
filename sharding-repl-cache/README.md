@@ -71,6 +71,8 @@ rs.initiate(
 exit();
 ```
 
+После выполнения этой команды иногда все хосты в rs.status() являются SECONDARY. В моем случае помогло rs.stepDown(). Через 10-15 секунд rs.status() показывает, что праймари появился.
+
 
 Инициируем роутер
 
@@ -80,6 +82,57 @@ docker exec -it mongos_router mongosh --port 27020
 sh.addShard( "shard1/shard1-1:27018,shard1-2:27021,shard1-3:27023");
 sh.addShard( "shard2/shard2-1:27019,shard2-2:27022,shard2-3:27024");
 exit();
+```
+
+После внесения шард выполним sh.status() и увидим примерно следующее
+```shell
+[direct: mongos] test> sh.status()
+shardingVersion
+{ _id: 1, clusterId: ObjectId('67d68b8e8819a881ce10baad') }
+---
+shards
+[
+  {
+    _id: 'shard1',
+    host: 'shard1/shard1-1:27018,shard1-2:27021,shard1-3:27023',
+    state: 1,
+    topologyTime: Timestamp({ t: 1742114273, i: 10 }),
+    replSetConfigVersion: Long('-1')
+  },
+  {
+    _id: 'shard2',
+    host: 'shard2/shard2-1:27019,shard2-2:27022,shard2-3:27024',
+    state: 1,
+    topologyTime: Timestamp({ t: 1742114282, i: 9 }),
+    replSetConfigVersion: Long('-1')
+  }
+]
+---
+active mongoses
+[ { '8.0.5': 1 } ]
+---
+autosplit
+{ 'Currently enabled': 'yes' }
+---
+balancer
+{
+  'Currently running': 'no',
+  'Currently enabled': 'yes',
+  'Failed balancer rounds in last 5 attempts': 0,
+  'Migration Results for the last 24 hours': 'No recent migrations'
+}
+---
+shardedDataDistribution
+[]
+---
+databases
+[
+  {
+    database: { _id: 'config', primary: 'config', partitioned: true },
+    collections: {}
+  }
+]
+[direct: mongos] test>
 ```
 
 Сгенерируем моковые данные
