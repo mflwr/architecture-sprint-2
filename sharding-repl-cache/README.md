@@ -1,5 +1,13 @@
 # mongo-sharding-repl
 
+```shell
+MongoServerError[FailedToSatisfyReadPreference]: Could not find host matching read preference { mode: "primary" } for set shard1
+```
+Такой ошибки встретить не довелось, зато при третьем прогоне задания встретил другую - отметил ниже.
+Так же, добиться стабильной работы связки локально удалось только после очистки докер вольюмов перед выполнением.
+docker system prune -af : просто потому что локально нечего терять, на всякий
+docker volume prune -af : без этого ИНОГДА случались спецэффекты при старте, особенно при переключении между заданий.
+
 ## Как запустить
 
 Запускаем mongodb и приложение
